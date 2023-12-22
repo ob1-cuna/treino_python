@@ -118,7 +118,7 @@ def main():
                     new_value = input("New info: ")
                     update_contact(int(selected['id']), "phone_number", new_value)
                 else:
-                    print("Something went wrong")
+                    print("Something went wrong.")
         else:
             print("Try again")
 
