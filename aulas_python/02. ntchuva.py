@@ -74,7 +74,7 @@ def jogar(tabu):
             ver_tabuleiro()
             break
         else:
-            print("Coordenada desconhecida. Coordenadas válidas:")
+            print("Coordenada desconhecida")
 
 
 def main():
