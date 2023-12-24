@@ -3,10 +3,8 @@ import random
 tabuleiro_player_1 = [[4, 4, 4, 4],[4, 4, 4, 4]]
 tabuleiro_player_2 = [[4, 4, 4, 4],[4, 4, 4, 4]]
 
-coord = {"A1": [0,0],"B1": [0,1],"C1": [0,2],"D1": [0,3],
+coordenadas = {"A1": [0,0],"B1": [0,1],"C1": [0,2],"D1": [0,3],
                "A2": [1,0],"B2": [1,1],"C2": [1,2],"D2": [1,3]}
-coordenadas_p1 = coord
-coordenadas_p2 = coord
 
 quem_joga = 1
 vencedor = None 
@@ -62,23 +60,31 @@ def mover_peca(x: int, y: int, tabuleiro:list):
         casas_percorridas %= quantidade_de_pedras
 
 
-def jogar(tabu):
+def jogar(tabuleiro_jogador):
     while True:
-        texto = input("Digite a coordenada: ").capitalize()
-        cord = obter_coordenadas(texto, coord)
-        if cord != "Posição desconhecida.":
-            ver_tabuleiro()
-            print()
-            mover_peca(cord[0], cord[1], tabu)
-            print()
-            ver_tabuleiro()
-            break
+        if tabuleiro_jogador == tabuleiro_player_1:
+            texto = input("Digite a coordenada: ").capitalize()
         else:
-            print("Coordenada desconhecida")
-
+            texto = random.choice(list(coordenadas.keys()))
+            print(f"Jogador 2 escolheu: {texto}")
+            
+        coordenada = obter_coordenadas(texto, coordenadas)
+        if coordenada != "Posição desconhecida.":
+            x, y = coordenada[0], coordenada[1]
+            if tabuleiro_jogador[x][y] > 0:
+                ver_tabuleiro()
+                print()
+                mover_peca(coordenada[0], coordenada[1], tabuleiro_jogador)
+                print()
+                ver_tabuleiro()
+                break
+            else:
+                print("Nenhuma peça nesta posição. Tente novamente.")
+        else:
+            print("Coordenada desconhecida. Tente novamente.")
 
 def main():
-    global quem_joga
+    global quem_joga, vencedor
     ver_tabuleiro()
     print()
     while vencedor is None:
