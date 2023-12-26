@@ -3,12 +3,12 @@ lista_2 = [1,1]
 
 class Solution:
     def findDisappearedNumbers(self, nums: list[int]) -> list[int]:
-        lista = []
+        lista = set()
         nums_sorted = list(set(nums))
-        for n in range(len(nums) + 1):
+        for n in range(1, len(nums) + 1):
             if n not in nums_sorted:
-                lista.append(n)
-        return lista[1:]
+                lista.add(n)
+        return sorted(lista)
     
 solucao = Solution()
 print(solucao.findDisappearedNumbers(lista))
