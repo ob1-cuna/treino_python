@@ -13,12 +13,23 @@
 # Input: nums = [1]
 # Output: 1
 
-nums = [2,2,1]
+nums = [1,1,2,1,2]
 
 class Solution:
     def singleNumber(self, nums: list[int]) -> int:
+        nums_dict = {}
         for n in nums:
-            if nums.count(n) == 1:
-                return n
+            if n in nums_dict:
+                nums_dict[n] = nums_dict[n] + 1
+            else:
+                nums_dict[n] = 1
+        less = sorted(nums_dict.items(), key=lambda x:x[1])
+        print(less)
+        if less[1] == 1:
+            return less[0]
+        else:
+            return None
+    
+
 solucao = Solution()
 print(solucao.singleNumber(nums))
