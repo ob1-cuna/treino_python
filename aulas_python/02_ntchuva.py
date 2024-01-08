@@ -1,24 +1,45 @@
 import random
 
-tabuleiro_player_1 = [[4, 4, 4, 4],[4, 4, 4, 4]]
-tabuleiro_player_2 = [[4, 4, 4, 4],[4, 4, 4, 4]]
+tabuleiro_player_1 = [[1, 2, 4, 4],[4, 0, 4, 4]]
+tabuleiro_player_2 = [[4, 1, 1, 2],[4, 8, 1, 2]]
 
-coordenadas = {"A1": [0,0],"B1": [0,1],"C1": [0,2],"D1": [0,3],
-               "A2": [1,0],"B2": [1,1],"C2": [1,2],"D2": [1,3]}
+coordenadas_P2 = {"A1": (0,0), "A2": (0,1), "A3": (0,2), "A4": (0,3),
+                  "B1": (1,0), "B2": (1,1), "B3": (1,2), "B4": (1,3)}
+
+coordenadas_P1 = {"C1": (0,0), "C2": (0,1), "C3": (0,2), "C4": (0,3),
+                  "D1": (1,0), "D2": (1,1), "D3": (1,2), "D4": (1,3)}
 
 quem_joga = 1
 vencedor = None 
 
 def ver_tabuleiro():
-    for linha in tabuleiro_player_1:
-        for coluna in linha:
+    p2_letras = ["   ", "1", "2", "3", "4", "   "]
+    p1_letras = ["   ", "1", "2", "3", "4", "   "]
+    index_letra = ["A", "B", "C", "D"]
+    
+    for p2_letra in p2_letras:
+        print(p2_letra, end=" ")
+    print("\n   ---------  ")
+    for index, linha in enumerate(tabuleiro_player_2):
+        print(index_letra[index], end=" | ")
+        for index_col, coluna in enumerate(linha):
             print(coluna, end=" ")
+            if index_col == 3:
+                print(f"| {index_letra[index]}", end="")
         print("")
-    print("-------")
-    for linha in tabuleiro_player_2:
-        for coluna in linha:
+    print("   --------- ")
+    for index, linha in enumerate(tabuleiro_player_1):
+        print(index_letra[index+2], end=" | ")
+        for index_col, coluna in enumerate(linha):
             print(coluna, end=" ")
+            if index_col == 3:
+                print(f"| {index_letra[index+2]}", end="")
         print("")
+    print("   --------- ")
+    for p1_letra in p1_letras:
+        print(p1_letra, end=" ")
+    print("")
+
 
 def obter_coordenadas(coordenada:str, tabuleiro:dict):
     if coordenada in tabuleiro:
@@ -28,52 +49,68 @@ def obter_coordenadas(coordenada:str, tabuleiro:dict):
 
 def mover_peca(x: int, y: int, tabuleiro:list):
     casas_a_percorrer = tabuleiro[x][y]
-
+    casas_percorridas = 0
+    linhas = len(tabuleiro)
+    colunas = len(tabuleiro[0])
+    
+    
     if casas_a_percorrer == 0:
         print("Nada para mover, tenta outra vez.")
         return
 
-    quantidade_de_pedras = sum(len(row) for row in tabuleiro)
-    posicao_cova = x * len(tabuleiro[0]) + y
-    casas_percorridas = 0
+    horario_direcao = [(-1, 0), (0, 1), (1, 0), (0, -1)] 
+    horario_index = 0
 
-    while casas_percorridas < casas_a_percorrer:
-        for i in range(posicao_cova, quantidade_de_pedras):
-            linha = i // len(tabuleiro[0])
-            coluna = i % len(tabuleiro[0])
+    linha, coluna = x, y
+    while casas_a_percorrer > casas_percorridas:
+        for _ in range(casas_a_percorrer + 1):
+            next_linha, next_coluna = linha + horario_direcao[horario_index][0], coluna + horario_direcao[horario_index][1]
             valor = tabuleiro[linha][coluna]
             if casas_percorridas == 0:
                 casas_percorridas += 1
                 tabuleiro[x][y] = 0
                 print(f"{casas_percorridas}. pos(x={linha}, y={coluna}), {valor} -> {tabuleiro[linha][coluna]}")
-                #ver_tabuleiro()
             else:
                 casas_percorridas += 1
                 tabuleiro[linha][coluna] += 1
+
                 print(f"{casas_percorridas}. pos(x={linha}, y={coluna}), {valor} -> {tabuleiro[linha][coluna]}")
                 if casas_percorridas-1 >= casas_a_percorrer:
                     if tabuleiro[linha][coluna] > 1:
-                        #ver_tabuleiro()
                         mover_peca(linha, coluna, tabuleiro)
-                    return
-        posicao_cova = 0
-        casas_percorridas %= quantidade_de_pedras
+            
+            if 0 <= next_linha < linhas and 0 <= next_coluna < colunas:
+                linha, coluna = next_linha, next_coluna
+            else:
+                horario_index = (horario_index - 1) % 4
+                linha, coluna = linha + horario_direcao[horario_index][0], coluna + horario_direcao[horario_index][1]
 
+        
+
+def get_next_pos(x,y,tabuleiro):
+    if tabuleiro == tabuleiro_player_1:
+        if x == 0 and y == 0:
+            return 0,1
+        elif x == 1 and y == 3:
+            return 0,3
+    elif tabuleiro == tabuleiro_player_2:
+        print("Hi")
 
 def jogar(tabuleiro_jogador):
     while True:
         if tabuleiro_jogador == tabuleiro_player_1:
             texto = input("Digite a coordenada: ").capitalize()
-        else:
-            texto = random.choice(list(coordenadas.keys()))
+            coordenada = coordenadas_P1
+        
+        elif tabuleiro_jogador == tabuleiro_player_2:
+            texto = random.choice(list(coordenadas_P2.keys()))
+            coordenada = coordenadas_P2
             print(f"Jogador 2 escolheu: {texto}")
             
-        coordenada = obter_coordenadas(texto, coordenadas)
+        coordenada = obter_coordenadas(texto, coordenada)
         if coordenada != "Posição desconhecida.":
             x, y = coordenada[0], coordenada[1]
             if tabuleiro_jogador[x][y] > 0:
-                ver_tabuleiro()
-                print()
                 mover_peca(coordenada[0], coordenada[1], tabuleiro_jogador)
                 print()
                 ver_tabuleiro()
@@ -89,11 +126,11 @@ def main():
     print()
     while vencedor is None:
         if quem_joga == 1:
-            print("Jogador 1")
+            print("\nJogador 1")
             jogar(tabuleiro_player_1)
             quem_joga = 2
         else:
-            print("Jogador 2")
+            print("\nJogador 2")
             jogar(tabuleiro_player_2)
             quem_joga = 1
 
