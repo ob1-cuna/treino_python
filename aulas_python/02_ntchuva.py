@@ -1,7 +1,7 @@
 import random
 
-tabuleiro_player_1 = [[1, 2, 4, 4],[4, 0, 4, 4]]
-tabuleiro_player_2 = [[4, 1, 1, 2],[4, 8, 1, 2]]
+tabuleiro_player_1 = [[4, 4, 4, 4],[4, 4, 4, 4]]
+tabuleiro_player_2 = [[4, 4, 4, 4],[4, 4, 4, 4]]
 
 coordenadas_P2 = {"A1": (0,0), "A2": (0,1), "A3": (0,2), "A4": (0,3),
                   "B1": (1,0), "B2": (1,1), "B3": (1,2), "B4": (1,3)}
@@ -48,44 +48,52 @@ def obter_coordenadas(coordenada:str, tabuleiro:dict):
         return "Posição desconhecida."
 
 def mover_peca(x: int, y: int, tabuleiro:list):
-    casas_a_percorrer = tabuleiro[x][y]
-    casas_percorridas = 0
-    linhas = len(tabuleiro)
-    colunas = len(tabuleiro[0])
-    
-    
-    if casas_a_percorrer == 0:
-        print("Nada para mover, tenta outra vez.")
-        return
+  casas_a_percorrer = tabuleiro[x][y]
+  casas_percorridas = 0
 
-    horario_direcao = [(-1, 0), (0, 1), (1, 0), (0, -1)] 
-    horario_index = 0
-
-    linha, coluna = x, y
-    while casas_a_percorrer > casas_percorridas:
+  while casas_a_percorrer > casas_percorridas:
         for _ in range(casas_a_percorrer + 1):
-            next_linha, next_coluna = linha + horario_direcao[horario_index][0], coluna + horario_direcao[horario_index][1]
-            valor = tabuleiro[linha][coluna]
-            if casas_percorridas == 0:
-                casas_percorridas += 1
-                tabuleiro[x][y] = 0
-                print(f"{casas_percorridas}. pos(x={linha}, y={coluna}), {valor} -> {tabuleiro[linha][coluna]}")
-            else:
-                casas_percorridas += 1
-                tabuleiro[linha][coluna] += 1
+          valor = tabuleiro[x][y]
+          if x == 0 and y == 0:
+              next_x = 1
+              next_y = 0
+          elif x == 1 and y == 0:
+            next_x = 1
+            next_y = 1
+          elif x == 1 and y == 1:
+            next_x = 1
+            next_y = 2
+          elif x == 1 and y == 2:
+            next_x = 1
+            next_y = 3
+          elif x == 1 and y == 3:
+            next_x = 0
+            next_y = 3
+          elif x == 0 and y == 3:
+            next_x = 0
+            next_y = 2
+          elif x == 0 and y == 2:
+            next_x = 0
+            next_y = 1
+          elif x == 0 and y == 1:
+            next_x = 0
+            next_y = 0
+          
+          if casas_percorridas == 0:
+            casas_percorridas += 1
+            tabuleiro[x][y] = 0
+            print(f"\n{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")
+          else:
+              casas_percorridas += 1
+              tabuleiro[x][y] += 1
+              print(f"{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")
+              if (casas_percorridas-1 == casas_a_percorrer):
+                    if tabuleiro[x][y] > 1:
+                        print(f"\nPeças a mover: {tabuleiro[x][y]}")
+                        mover_peca(x, y, tabuleiro) 
+          x = next_x
+          y = next_y    
 
-                print(f"{casas_percorridas}. pos(x={linha}, y={coluna}), {valor} -> {tabuleiro[linha][coluna]}")
-                if casas_percorridas-1 >= casas_a_percorrer:
-                    if tabuleiro[linha][coluna] > 1:
-                        mover_peca(linha, coluna, tabuleiro)
-            
-            if 0 <= next_linha < linhas and 0 <= next_coluna < colunas:
-                linha, coluna = next_linha, next_coluna
-            else:
-                horario_index = (horario_index - 1) % 4
-                linha, coluna = linha + horario_direcao[horario_index][0], coluna + horario_direcao[horario_index][1]
-
-        
 
 def get_next_pos(x,y,tabuleiro):
     if tabuleiro == tabuleiro_player_1:
