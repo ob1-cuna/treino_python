@@ -1,9 +1,9 @@
 import random
 
-tabuleiro_player_2 = [[0, 0, 0, 0],
-                      [0, 1, 0, 0]]
+tabuleiro_player_2 = [[4, 4, 4, 4],
+                      [4, 4, 4, 4]]
 
-tabuleiro_player_1 = [[4, 0, 1, 4],
+tabuleiro_player_1 = [[4, 4, 4, 4],
                       [4, 4, 4, 4]]
 
 
