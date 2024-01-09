@@ -1,6 +1,6 @@
 import random
 
-tabuleiro_player_1 = [[4, 4, 4, 4],[4, 4, 4, 4]]
+tabuleiro_player_1 = [[0, 0, 0, 4],[4, 4, 4, 3]]
 tabuleiro_player_2 = [[4, 4, 4, 4],[4, 4, 4, 4]]
 
 coordenadas_P2 = {"A1": (0,0), "A2": (0,1), "A3": (0,2), "A4": (0,3),
@@ -90,7 +90,16 @@ def mover_peca(x: int, y: int, tabuleiro:list):
               if (casas_percorridas-1 == casas_a_percorrer):
                     if tabuleiro[x][y] > 1:
                         print(f"\nPeças a mover: {tabuleiro[x][y]}")
-                        mover_peca(x, y, tabuleiro) 
+                        mover_peca(x, y, tabuleiro)
+                    elif tabuleiro[x][y] == 1: # CAPTURA DE PEÇA
+                        if tabuleiro == tabuleiro_player_1 and x == 0:
+                            if tabuleiro_player_2[x+1][y] > 0:
+                                print(f"\n Capuradas {tabuleiro_player_2[x+1][y]} peças do Jogador 2")
+                                tabuleiro_player_2[x+1][y] = 0
+                        elif tabuleiro == tabuleiro_player_2 and x == 1:
+                            if tabuleiro_player_1[x-1][y] > 0:
+                                print(f"\n Capuradas {tabuleiro_player_1[x-1][y]} peças do Jogador 1")
+                                tabuleiro_player_1[x-1][y] = 0
           x = next_x
           y = next_y    
 
