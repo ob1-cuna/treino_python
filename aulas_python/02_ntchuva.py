@@ -1,7 +1,11 @@
 import random
 
-tabuleiro_player_1 = [[0, 0, 0, 4],[4, 4, 4, 3]]
-tabuleiro_player_2 = [[4, 4, 4, 4],[4, 4, 4, 4]]
+tabuleiro_player_2 = [[4, 4, 4, 4],
+                      [4, 4, 4, 4]]
+
+tabuleiro_player_1 = [[4, 4, 4, 4],
+                      [4, 4, 4, 4]]
+
 
 coordenadas_P2 = {"A1": (0,0), "A2": (0,1), "A3": (0,2), "A4": (0,3),
                   "B1": (1,0), "B2": (1,1), "B3": (1,2), "B4": (1,3)}
