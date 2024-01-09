@@ -106,16 +106,7 @@ def mover_peca(x: int, y: int, tabuleiro:list):
                                 tabuleiro_player_1[x-1][y] = 0
           x = next_x
           y = next_y    
-
-
-def get_next_pos(x,y,tabuleiro):
-    if tabuleiro == tabuleiro_player_1:
-        if x == 0 and y == 0:
-            return 0,1
-        elif x == 1 and y == 3:
-            return 0,3
-    elif tabuleiro == tabuleiro_player_2:
-        print("Hi")
+          
 
 def jogar(tabuleiro_jogador):
     while True:
