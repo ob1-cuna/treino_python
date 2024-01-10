@@ -14,7 +14,7 @@ coordenadas_P1 = {"C1": (0,0), "C2": (0,1), "C3": (0,2), "C4": (0,3),
                   "D1": (1,0), "D2": (1,1), "D3": (1,2), "D4": (1,3)}
 
 pontos_player_2:int = 0
-pontos_player_1:int = 31
+pontos_player_1:int = 0
 
 quem_joga = 1
 vencedor = None
@@ -115,7 +115,26 @@ def mover_peca(x: int, y: int, tabuleiro:list):
                                 tabuleiro_player_1[x-1][y] = 0
           x = next_x
           y = next_y    
-          
+
+
+def obter_posicoes_validas(tabuleiro:list):
+  global coordenadas_P2
+
+  key_list = list(coordenadas_P2.keys())
+  val_list = list(coordenadas_P2.values())
+
+  posicoes_validas = []
+  
+  for x_index, x in enumerate(tabuleiro):
+    for y_index, y in enumerate(x):
+      if tabuleiro[x_index][y_index] > 0:
+        valor = (x_index,y_index)
+        if valor in val_list:
+          posicao = val_list.index(valor)
+          posicoes_validas.append(key_list[posicao])
+
+  return posicoes_validas
+    
 
 def jogar(tabuleiro_jogador):
     while True:
@@ -124,7 +143,7 @@ def jogar(tabuleiro_jogador):
             coordenada = coordenadas_P1
         
         elif tabuleiro_jogador == tabuleiro_player_2:
-            texto = random.choice(list(coordenadas_P2.keys()))
+            texto = random.choice(obter_posicoes_validas(tabuleiro_player_2))
             coordenada = coordenadas_P2
             print(f"Jogador 2 escolheu: {texto}")
             
@@ -150,7 +169,7 @@ def main():
             jogar(tabuleiro_player_1)
             if pontos_player_1 > 31:
                 vencedor = pontos_player_1
-                print("GAME OVER")
+                print("\n   GAME OVER  \nJOGADOR 1 VENCEU\n")
             else:
                 quem_joga = 2
         else:
@@ -158,7 +177,7 @@ def main():
             jogar(tabuleiro_player_2)
             if pontos_player_2 >= 31:
                 vencedor = pontos_player_2
-                print("GAME OVER")
+                print("\n   GAME OVER  \nJOGADOR 2 VENCEU\n")
             else:
                 quem_joga = 1
 
