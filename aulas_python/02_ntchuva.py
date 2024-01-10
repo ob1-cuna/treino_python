@@ -155,30 +155,45 @@ def mover_peca(x: int, y: int, tabuleiro:list):
 
 
 def obter_posicoes_validas(tabuleiro:list):
-  global coordenadas_P2
+  global coordenadas_P1, coordenadas_P2
+  
+  if tabuleiro == tabuleiro_player_1:
+     coordenadas = coordenadas_P1
+  else:
+     coordenadas = coordenadas_P2
 
-  key_list = list(coordenadas_P2.keys())
-  val_list = list(coordenadas_P2.values())
+  key_list = list(coordenadas.keys())
+  val_list = list(coordenadas.values())
 
-  posicoes_validas = []
+  posicoes_validas = [[],[]] # Array 2D que no primeiro index sao colocados elementos == 1, e no segundo index apenas elementos maiores que 1.
   
   for x_index, x in enumerate(tabuleiro):
     for y_index, y in enumerate(x):
-      if tabuleiro[x_index][y_index] > 0:
+      if tabuleiro[x_index][y_index] == 1:
         valor = (x_index,y_index)
+        
         if valor in val_list:
           posicao = val_list.index(valor)
-          posicoes_validas.append(key_list[posicao])
+          posicoes_validas[0].append(key_list[posicao])
 
-  return posicoes_validas
+      elif tabuleiro[x_index][y_index] > 1: #verfiica se o elemento é maior que 1
+        valor = (x_index,y_index) # obtem as coordenadas
+        
+        if valor in val_list: # verifica se as coordenadas está presente nos valores das coordenas do dicionario
+          posicao = val_list.index(valor) # obtem a posição da coordenada no dicionario
+          posicoes_validas[1].append(key_list[posicao]) # adiciona na lista posicoes_validas[1] a chave do elemento
+  
+  if len(posicoes_validas[1]) >= 1:
+    return posicoes_validas[1]
+  else:
+    return posicoes_validas[0]
     
 
 def jogar(tabuleiro_jogador):
     while True:
         if tabuleiro_jogador == tabuleiro_player_1:
             texto = input("Digite a coordenada: ").capitalize()
-            coordenada = coordenadas_P1
-        
+            coordenada = coordenadas_P1         
         elif tabuleiro_jogador == tabuleiro_player_2:
             texto = random.choice(obter_posicoes_validas(tabuleiro_player_2))
             coordenada = coordenadas_P2
@@ -188,10 +203,13 @@ def jogar(tabuleiro_jogador):
         if coordenada != "Posição desconhecida.":
             x, y = coordenada[0], coordenada[1]
             if tabuleiro_jogador[x][y] > 0:
-                mover_peca(coordenada[0], coordenada[1], tabuleiro_jogador)
-                print()
-                ver_tabuleiro()
-                break
+                if texto in obter_posicoes_validas(tabuleiro_jogador):
+                  mover_peca(coordenada[0], coordenada[1], tabuleiro_jogador)
+                  print()
+                  ver_tabuleiro()
+                  break
+                else:
+                   print("Existem casas com mais de uma pedra. Tente novamente.")
             else:
                 print("Nenhuma peça nesta posição. Tente novamente.")
         else:
@@ -219,4 +237,4 @@ def main():
                 quem_joga = 1
 
 if __name__ == "__main__":
-    main()
+   main()
