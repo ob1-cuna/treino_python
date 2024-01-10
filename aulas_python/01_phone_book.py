@@ -1,8 +1,8 @@
 import re
 
-contactos = [{'id':'5', 'name': 'Jose', 'phone_number': '1234'},
-             {'id':'6', 'name': 'Ana', 'phone_number': '1234'},
-             {'id':'7', 'name': 'Anacleto Ana', 'phone_number': '1254'}]
+contactos = [{'id':'5', 'name': 'Jose Macucule', 'phone_number': '843991991'},
+             {'id':'6', 'name': 'Anatercia Joaquim', 'phone_number': '829194359'},
+             {'id':'7', 'name': 'Anacleto Cuna', 'phone_number': '857044444'}]
 
 
 def add_contact():
