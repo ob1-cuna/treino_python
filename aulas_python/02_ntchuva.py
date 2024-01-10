@@ -6,11 +6,18 @@ tabuleiro_player_2 = [[2, 2, 2, 2, 2, 2],
 tabuleiro_player_1 = [[2, 2, 2, 2, 2, 2],
                       [2, 2, 2, 2, 2, 2]]
 
-coordenadas_P2 = {"A1": (0,0), "A2": (0,1), "A3": (0,2), "A4": (0,3), "A5": (0,4), "A6": (0,5),
-                  "B1": (1,0), "B2": (1,1), "B3": (1,2), "B4": (1,3), "B5": (1,4), "B6": (1,5)}
-
-coordenadas_P1 = {"C1": (0,0), "C2": (0,1), "C3": (0,2), "C4": (0,3), "C5": (0,4), "C6": (0,5),
-                  "D1": (1,0), "D2": (1,1), "D3": (1,2), "D4": (1,3), "D5": (1,4), "D6": (1,5)}
+coordenadas_P2 = {
+    f"A{i + 1}": (0, i) for i in range(6)
+}
+coordenadas_P1 = {
+    f"C{i + 1}": (0, i) for i in range(6)
+}
+coordenadas_P1.update({
+    f"D{i + 1}": (1, i) for i in range(6)
+})
+coordenadas_P2.update({
+    f"B{i + 1}": (1, i) for i in range(6)
+})
 
 pontos_player_2:int = 0
 pontos_player_1:int = 0
@@ -21,32 +28,16 @@ quem_joga = 1
 vencedor = None
 
 def ver_tabuleiro():
-    p2_letras = ["   ", "1", "2", "3", "4", "5", "6","   "]
-    p1_letras = ["   ", "1", "2", "3", "4", "5", "6","   "]
-    index_letra = ["A", "B", "C", "D"]
-    
-    for p2_letra in p2_letras:
-        print(p2_letra, end=" ")
-    print("\n   ------------  ")
-    for index, linha in enumerate(tabuleiro_player_2):
-        print(index_letra[index], end=" | ")
-        for index_col, coluna in enumerate(linha):
-            print(coluna, end=" ")
-            if index_col == 5:
-                print(f"| {index_letra[index]}", end="")
-        print("")
-    print("   ------------ ")
-    for index, linha in enumerate(tabuleiro_player_1):
-        print(index_letra[index+2], end=" | ")
-        for index_col, coluna in enumerate(linha):
-            print(coluna, end=" ")
-            if index_col == 5:
-                print(f"| {index_letra[index+2]}", end="")
-        print("")
-    print("   ------------ ")
-    for p1_letra in p1_letras:
-        print(p1_letra, end=" ")
-    print(f"\n\nP1 = {pontos_player_1}    P2 = {pontos_player_2}\nPedras Capuradas")
+    print("   ", " ".join(str(i + 1) for i in range(6)))
+    print("   --------------")
+    for linha_index_p2, linha_p2 in enumerate(tabuleiro_player_2):
+        print(chr(65 + linha_index_p2), "|", " ".join(str(coluna_p2) for coluna_p2 in linha_p2), "|", chr(65 + linha_index_p2))
+    print("   --------------")
+    for linha_index_p1, linha_p1 in enumerate(tabuleiro_player_1):
+        print(chr(67 + linha_index_p1), "|", " ".join(str(coluna_p1) for coluna_p1 in linha_p1), "|", chr(67 + linha_index_p1))
+    print("   --------------")
+    print("   ", " ".join(str(i + 1) for i in range(6)))
+    print(f"\n  P1 = {pontos_player_1:02d}  P2 = {pontos_player_2:02d}\n  Pedras Capuradas")
 
 
 def obter_coordenadas(coordenada:str, tabuleiro:dict):
