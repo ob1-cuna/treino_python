@@ -235,7 +235,7 @@ def main():
         screen.blit(bg_img, rect_bg)
         
         tabuleiro.desenhar_tabuleiro()
-        jogada.mover_peca(0, 0, tabuleiro_player_1)
+        jogada.mover_peca(0, 3, tabuleiro_player_1)
        
         # Flip the display
         pygame.display.flip()
