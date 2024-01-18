@@ -42,9 +42,7 @@ def ver_tabuleiro():
         )
     print("   --------------")
     print("   ", " ".join(str(i + 1) for i in range(6)))
-    print(
-        f"\n  P1 = {pontos_player_1:02d}  P2 = {pontos_player_2:02d}\n  Pedras Capuradas"
-    )
+    print(f"\n  P1 = {pontos_player_1:02d}  P2 = {pontos_player_2:02d}\n  Pedras Capuradas")
 
 
 def obter_coordenadas(coordenada: str, tabuleiro: dict):
@@ -58,11 +56,10 @@ def mover_peca(x: int, y: int, tabuleiro: list):
     casas_a_percorrer = tabuleiro[x][y]  # define o numero de casas que irá percorrer
     casas_percorridas = 0  # helper
     global pontos_player_1, pontos_player_2  # número actual de pontos dos jogadores.
+    ultima_x, ultima_y, pecas_capturadas = 0, 0, 0
 
     while casas_a_percorrer > casas_percorridas:
-        for _ in range(
-            casas_a_percorrer + 1
-        ):  # +1 para adicionar mais um movimento, pois inicia a contagem a partir da remoção da pedra.
+        for _ in range(casas_a_percorrer + 1):  # +1 para adicionar mais um movimento, pois inicia a contagem a partir da remoção da pedra.
             valor = tabuleiro[x][y]  # helper
 
             # Verifica a posição e e diz ao programa que posição é a proxima a mover
@@ -108,80 +105,51 @@ def mover_peca(x: int, y: int, tabuleiro: list):
             if casas_percorridas == 0:
                 casas_percorridas += 1
                 tabuleiro[x][y] = 0
-                print(
-                    f"\n{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}"
-                )
+                print(f"\n{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")
             else:
                 # Caso não seja a primeira casa continua a distribuição no sentido anti-horário.
                 casas_percorridas += 1
                 tabuleiro[x][y] += 1
-                print(
-                    f"{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}"
-                )  # Imprime o relatório da posição actual, pedras existentes anteriorimente e novo número de pedras.
-                if (
-                    casas_percorridas - 1 == casas_a_percorrer
-                ):  # Verifica se está no ultimo movimento
-                    if (
-                        tabuleiro[x][y] > 1
-                    ):  # se a casa onde foi feito o ultimo movimento número de peças for maior que 1
-                        print(
-                            f"\nPeças a mover: {tabuleiro[x][y]}"
-                        )  # Informa o número de peças que irá mover
-                        mover_peca(
-                            x, y, tabuleiro
-                        )  # Aplica novamente a função usando os parametros da posição actual.
+                print(f"{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")  # Imprime o relatório da posição actual, pedras existentes anteriorimente e novo número de pedras.
+                if (casas_percorridas - 1 == casas_a_percorrer):  # Verifica se está no ultimo movimento
+                    if (tabuleiro[x][y] > 1):  # se a casa onde foi feito o ultimo movimento número de peças for maior que 1
+                        print(f"\nPeças a mover: {tabuleiro[x][y]}")  # Informa o número de peças que irá mover
+                        mover_peca(x, y, tabuleiro)  # Aplica novamente a função usando os parametros da posição actual.
 
                     elif tabuleiro[x][y] == 1:  # CAPTURA DE PEÇA
-                        if (
-                            tabuleiro == tabuleiro_player_1 and x == 0
-                        ):  # verifica se está na posição interna
-                            if (
-                                tabuleiro_player_2[x + 1][y] > 0
-                            ):  # verifica se o numero de pedras do adversário na linha imediatamente a seguir do jogador 1 tem ou não peças
+                        pecas_capturadas = 0
+                        if (tabuleiro == tabuleiro_player_1 and x == 0):  # verifica se está na posição interna
+                            if (tabuleiro_player_2[x + 1][y] > 0):  # verifica se o numero de pedras do adversário na linha imediatamente a seguir do jogador 1 tem ou não peças
                                 pedras_externas = 0  # helper
                                 pedras_internas = tabuleiro_player_2[x + 1][y]  # helper
-
-                                tabuleiro_player_2[x + 1][
-                                    y
-                                ] = 0  # recolhe as pedras internas do adversário
-                                pontos_player_1 = (
-                                    pontos_player_1 + pedras_internas
-                                )  # converte o número de pedras removidas do jogador 2 em pontos
-
-                                if (
-                                    tabuleiro_player_2[x][y] > 0
-                                ):  # verfica se a coluna externa tem ou não pedras
+                                tabuleiro_player_2[x + 1][y] = 0  # recolhe as pedras internas do adversário
+                                
+                                if (tabuleiro_player_2[x][y] > 0):  # verfica se a coluna externa tem ou não pedras
                                     pedras_externas = tabuleiro_player_2[x][y]  # helper
-                                    tabuleiro_player_2[x][
-                                        y
-                                    ] = 0  # recolhe as pedras externas
-                                    pontos_player_1 = (
-                                        pontos_player_1 + pedras_externas
-                                    )  # converte o número de pedras removidas do jogador 2 em pontos
+                                    tabuleiro_player_2[x][y] = 0  # recolhe as pedras externas
 
-                                print(
-                                    f"\nCapuradas {pedras_internas + pedras_externas} peças do Jogador 1"
-                                )  # informa aos jogadores quantas peças foram removidas
+                                pecas_capturadas = pedras_externas + pedras_internas
+                                pontos_player_1 += pecas_capturadas
+                                print(f"\nCapuradas {pecas_capturadas} peças do Jogador 2")  # informa aos jogadores quantas peças foram removidas
 
                         elif tabuleiro == tabuleiro_player_2 and x == 1:
                             if tabuleiro_player_1[x - 1][y] > 0:
                                 pedras_externas = 0
                                 pedras_internas = tabuleiro_player_1[x - 1][y]
-
                                 tabuleiro_player_1[x - 1][y] = 0
-                                pontos_player_2 = pontos_player_2 + pedras_internas
 
                                 if tabuleiro_player_1[x][y] > 0:
                                     pedras_externas = tabuleiro_player_1[x][y]
                                     tabuleiro_player_1[x][y] = 0
-                                    pontos_player_2 = pontos_player_2 + pedras_internas
+                                pecas_capturadas = pedras_externas + pedras_internas
+                                pontos_player_2 += pecas_capturadas
 
-                                print(
-                                    f"\nCapuradas {pedras_internas + pedras_externas} peças do Jogador 1"
-                                )
-
+                                print(f"\nCapuradas {pecas_capturadas} peças do Jogador 1")
+                        ultima_x, ultima_y = x, y
             x = next_x
             y = next_y
+
+    return ultima_x, ultima_y, pecas_capturadas
 
 
 def obter_posicoes_validas(tabuleiro: list):
@@ -195,10 +163,7 @@ def obter_posicoes_validas(tabuleiro: list):
     key_list = list(coordenadas.keys())
     val_list = list(coordenadas.values())
 
-    posicoes_validas = [
-        [],
-        [],
-    ]  # Array 2D que no primeiro index sao colocados elementos == 1, e no segundo index apenas elementos maiores que 1.
+    posicoes_validas = [[],[]]  # Array 2D que no primeiro index sao colocados elementos == 1, e no segundo index apenas elementos maiores que 1.
 
     for x_index, x in enumerate(tabuleiro):
         for y_index, y in enumerate(x):
@@ -233,12 +198,12 @@ def obter_posicoes_validas(tabuleiro: list):
 def jogar(tabuleiro_jogador):
     while True:
         if tabuleiro_jogador == tabuleiro_player_1:
-            texto = input("Digite a coordenada: ").capitalize()
+            texto = input("\nDigite a coordenada: ").capitalize()
             coordenada = coordenadas_P1
         elif tabuleiro_jogador == tabuleiro_player_2:
             texto = random.choice(obter_posicoes_validas(tabuleiro_player_2))
             coordenada = coordenadas_P2
-            print(f"Jogador 2 escolheu: {texto}")
+            print(f"\nJogador 2 escolheu: {texto}")
 
         coordenada = obter_coordenadas(texto, coordenada)
         if coordenada != "Posição desconhecida.":
@@ -262,7 +227,6 @@ def main():
     ver_tabuleiro()
     while vencedor is None:
         if quem_joga == 1:
-            print("\nJogador 1")
             jogar(tabuleiro_player_1)
             if pontos_player_1 > total_pedras_p2 - 1:
                 vencedor = pontos_player_1
@@ -270,7 +234,6 @@ def main():
             else:
                 quem_joga = 2
         else:
-            print("\nJogador 2")
             jogar(tabuleiro_player_2)
             if pontos_player_2 > total_pedras_p1 - 1:
                 vencedor = pontos_player_2
