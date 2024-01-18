@@ -8,7 +8,7 @@ pygame.init()
 tabuleiro_player_2 = [[2, 2, 2, 2, 2, 2],
                       [2, 2, 2, 2, 2, 2]]
 
-tabuleiro_player_1 = [[2, 2, 2, 2, 2, 2],
+tabuleiro_player_1 = [[0, 2, 2, 2, 2, 2],
                       [2, 2, 2, 2, 2, 2]]
 
 ROW_HEIGHT = 115
