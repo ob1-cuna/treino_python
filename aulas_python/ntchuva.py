@@ -126,7 +126,7 @@ def obter_posicoes_validas(tabuleiro: list):
                     posicao = val_list.index(valor)
                     posicoes_validas[0].append(key_list[posicao])
 
-            elif tabuleiro[x_index][y_index] > 1:  # Verfiica se o elemento é maior que 1
+            elif tabuleiro[x_index][y_index] > 1:  # Verifica se o elemento é maior que 1
                 valor = (x_index, y_index)  # obtem as coordenadas
 
                 if valor in val_list:  # verifica se as coordenadas está presente nos valores das coordenas do dicionario
