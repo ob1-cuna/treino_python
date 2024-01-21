@@ -123,8 +123,10 @@ def obter_posicoes_validas(tabuleiro: list):
                 valor = (x_index, y_index)
 
                 if valor in val_list:
-                    posicao = val_list.index(valor)
-                    posicoes_validas[0].append(key_list[posicao])
+                    proxima_casa = obter_proximo_movimento(x_index, y_index)
+                    if tabuleiro[proxima_casa[0]][proxima_casa[1]] == 0:
+                        posicao = val_list.index(valor)
+                        posicoes_validas[0].append(key_list[posicao])
 
             elif tabuleiro[x_index][y_index] > 1:  # Verfiica se o elemento é maior que 1
                 valor = (x_index, y_index)  # obtem as coordenadas
@@ -134,9 +136,9 @@ def obter_posicoes_validas(tabuleiro: list):
                     posicoes_validas[1].append(key_list[posicao])  # adiciona na lista posicoes_validas[1] a chave do elemento
 
     if len(posicoes_validas[1]) >= 1:
-        return posicoes_validas[1]
+        return posicoes_validas[1], "Fase Regular"
     else:
-        return posicoes_validas[0]
+        return posicoes_validas[0], "Fase Final"
 
 
 def jogar(tabuleiro_jogador):
@@ -145,7 +147,7 @@ def jogar(tabuleiro_jogador):
             texto = input("\nDigite a coordenada: ").capitalize()
             coordenada = coordenadas_P1
         elif tabuleiro_jogador == tabuleiro_player_2:
-            texto = random.choice(obter_posicoes_validas(tabuleiro_player_2))
+            texto = random.choice(obter_posicoes_validas(tabuleiro_player_2)[0])
             coordenada = coordenadas_P2
             print(f"\nJogador 2 escolheu: {texto}")
 
@@ -153,13 +155,16 @@ def jogar(tabuleiro_jogador):
         if coordenada != "Posição desconhecida.":
             x, y = coordenada[0], coordenada[1]
             if tabuleiro_jogador[x][y] > 0:
-                if texto in obter_posicoes_validas(tabuleiro_jogador):
+                if texto in obter_posicoes_validas(tabuleiro_jogador)[0]:
                     mover_peca(coordenada[0], coordenada[1], tabuleiro_jogador)
                     print()
                     ver_tabuleiro()
                     break
                 else:
-                    print("Existem casas com mais de uma pedra. Tente novamente.")
+                    if obter_posicoes_validas(tabuleiro_jogador)[1] == "Fase Regular":
+                        print("Existem casas com mais de uma pedra. Tente novamente.")
+                    elif obter_posicoes_validas(tabuleiro_jogador)[1] == "Fase Final":
+                        print("Fase final do jogo, já não pode juntar pedras. Tente novamente.")
             else:
                 print("Nenhuma peça nesta posição. Tente novamente.")
         else:

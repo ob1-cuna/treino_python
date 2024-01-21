@@ -39,23 +39,8 @@ class TABULEIRO:
         self.tabuleiro_vazio = pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/tabuleiro_vazio.png')
         self.cova_pontos = pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/covas_pontos.png')
         
-        self.valores_pedras = {0: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_00.png'),
-                               1: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_01.png'),
-                               2: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_02.png'),
-                               3: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_03.png'),
-                               
-                               4: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_04.png'),
-                               5: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_05.png'),
-                               6: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_06.png'),
-                               7: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_07.png'),
-                               
-                               8: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_08.png'),
-                               9: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_09.png'),
-                               10: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_10.png'),
-                               11: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_11.png'),
-                               
-                               12: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_12.png'),
-                               13: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_12+.png')}
+        self.valores_pedras = {i: pygame.image.load(f'aulas_python/resources/02_ntchuva/tabuleiro/cova_{i:02d}.png') for i in range(13)}
+        self.valores_pedras.update({13: pygame.image.load('aulas_python/resources/02_ntchuva/tabuleiro/cova_12+.png')})
 
     def desenhar_tabuleiro(self):
         self.rect_cova_pontos = self.cova_pontos.get_rect()
@@ -94,7 +79,6 @@ class TABULEIRO:
                 pedras_render = img_pedras.get_rect(center=(x, y_pedras))
                 screen.blit(img_pedras, pedras_render)
 
-    
     def display_update(self):
         screen.fill((217, 217, 217))
         rect_bg = bg_img.get_rect()
@@ -135,7 +119,7 @@ class JOGADAS:
                                         else:
                                             quem_joga = 2
         if quem_joga == 2:
-            jogada.jogar(tabuleiro_player_2, random.choice(jogada.obter_posicoes_validas(tabuleiro_player_2)))
+            jogada.jogar(tabuleiro_player_2, random.choice(jogada.obter_posicoes_validas(tabuleiro_player_2)[0]))
             if pontos_player_2 > total_pedras_p1 - 1:
                 vencedor = pontos_player_2
                 print("\n   GAME OVER  \nJOGADOR 2 VENCEU\n")
@@ -191,11 +175,14 @@ class JOGADAS:
         if coordenada != "Posição desconhecida.":
             x, y = coordenada[0], coordenada[1]
             if tabuleiro_jogador[x][y] > 0:
-                if texto in self.obter_posicoes_validas(tabuleiro_jogador):
+                if texto in self.obter_posicoes_validas(tabuleiro_jogador)[0]:
                     self.mover_peca(coordenada[0], coordenada[1], tabuleiro_jogador)
                     return True
                 else:
-                    print("Existem casas com mais de uma pedra. Tente novamente.")
+                    if self.obter_posicoes_validas(tabuleiro_jogador)[1] == "Fase Regular":
+                        print("Existem casas com mais de uma pedra. Tente novamente.")
+                    elif self.obter_posicoes_validas(tabuleiro_jogador)[1] == "Fase Final":
+                        print("Fase final do jogo, já não pode juntar pedras. Tente novamente.")
                     return False
             else:
                 print("Nenhuma peça nesta posição. Tente novamente.")
@@ -223,8 +210,10 @@ class JOGADAS:
                     valor = (x_index, y_index)
 
                     if valor in val_list:
-                        posicao = val_list.index(valor)
-                        posicoes_validas[0].append(key_list[posicao])
+                        proxima_casa = self.obter_proximo_movimento(x_index, y_index)
+                        if tabuleiro[proxima_casa[0]][proxima_casa[1]] == 0:
+                            posicao = val_list.index(valor)
+                            posicoes_validas[0].append(key_list[posicao])
 
                 elif tabuleiro[x_index][y_index] > 1:  # Verifica se o elemento é maior que 1
                     valor = (x_index, y_index)  # obtem as coordenadas
@@ -234,9 +223,9 @@ class JOGADAS:
                         posicoes_validas[1].append(key_list[posicao])  # adiciona na lista posicoes_validas[1] a chave do elemento
 
         if len(posicoes_validas[1]) >= 1:
-            return posicoes_validas[1]
+            return posicoes_validas[1], "Fase Regular"
         else:
-            return posicoes_validas[0]
+            return posicoes_validas[0], "Fase Final"
 
     def mover_peca(self, x: int, y: int, tabuleiro:list):
         tab = TABULEIRO()
@@ -289,9 +278,6 @@ screen = pygame.display.set_mode([1176, 758])
 
 bg_img = tabuleiro.tabuleiro_vazio
 relogio = pygame.time.Clock()
-rectangle = pygame.Rect(100, 100, 200, 150)
-
-checkk = [[284, 370, 402, 486], [385, 475, 402, 486]]
 
 def main():
     running = True
@@ -312,5 +298,5 @@ def main():
     pygame.quit()
 
 if __name__ == "__main__":
-    main()
+    main()   
 
