@@ -121,7 +121,7 @@ class JOGADAS:
                 return False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button
+                if event.button == 1:  
                     mouse_x, mouse_y = event.pos
                     for ponto in pontos_de_colisao:
                         if ponto["rect"].collidepoint(mouse_x, mouse_y):
@@ -131,6 +131,7 @@ class JOGADAS:
                                         if pontos_player_1 > total_pedras_p2 - 1:
                                             vencedor = pontos_player_1
                                             print("\n   GAME OVER  \nJOGADOR 1 VENCEU\n")
+                                            break
                                         else:
                                             quem_joga = 2
         if quem_joga == 2:
@@ -138,6 +139,7 @@ class JOGADAS:
             if pontos_player_2 > total_pedras_p1 - 1:
                 vencedor = pontos_player_2
                 print("\n   GAME OVER  \nJOGADOR 2 VENCEU\n")
+                quem_joga = 1
             else:
                 quem_joga = 1
         
