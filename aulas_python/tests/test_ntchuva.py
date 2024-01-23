@@ -27,3 +27,7 @@ def test_mover_peca():
                           [2, 2, 2, 2, 2, 2]]
     assert mover_peca(0, 3, tabuleiro_player_1) == [[2, 1, 1, 0, 2, 2], [2, 2, 2, 2, 2, 2]]
 
+    tabuleiro_player_2 = [[0, 2, 2, 2, 2, 2],
+                          [0, 2, 2, 2, 2, 2]]
+    assert mover_peca(0, 3, tabuleiro_player_2) == [[1, 1, 4, 1, 0, 3], [1, 0, 3, 3, 0, 3]]
+

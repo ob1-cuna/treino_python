@@ -1,4 +1,6 @@
 import random
+import copy
+import sys
 
 tabuleiro_player_2 = [[2, 2, 2, 2, 2, 2], [2, 2, 2, 2, 2, 2]]
 
@@ -16,6 +18,8 @@ total_pedras_p1, total_pedras_p2 = sum(map(sum, tabuleiro_player_1)), sum(map(su
 
 quem_joga = 1
 vencedor = None
+simulacao = 0
+max_recursion = 20
 
 
 def ver_tabuleiro():
@@ -44,8 +48,11 @@ def obter_proximo_movimento(x, y):
 
 
 def captura_de_pecas(tabuleiro, x, y):
-    global pontos_player_1, pontos_player_2  # número actual de pontos dos jogadores.
+    global pontos_player_1, pontos_player_2, quem_joga, tabuleiro_player_2  # número actual de pontos dos jogadores.
     pecas_capturadas, pedras_externas = 0, 0
+    if quem_joga == 2:
+        tabuleiro_player_2 = copy.deepcopy(tabuleiro)
+    
     if tabuleiro == tabuleiro_player_1 and x == 0:  # verifica se está na posição interna
         if tabuleiro_player_2[x + 1][y] > 0:  # verifica se o numero de pedras do adversário na linha imediatamente a seguir do jogador 1 tem ou não peças
             pedras_internas = tabuleiro_player_2[x + 1][y]  # helper
@@ -69,14 +76,15 @@ def captura_de_pecas(tabuleiro, x, y):
                 tabuleiro_player_1[x][y] = 0
             pecas_capturadas = pedras_externas + pedras_internas
             pontos_player_2 += pecas_capturadas
-
-            print(f"\nCapturadas {pecas_capturadas} peças do Jogador 1")
+            if simulacao == 0:
+                print(f"\nCapturadas {pecas_capturadas} peças do Jogador 1")
     return pecas_capturadas
 
 
 def mover_peca(x: int, y: int, tabuleiro: list):
     casas_a_percorrer = tabuleiro[x][y]  # define o numero de casas que irá percorrer
     casas_percorridas = 0  # helper
+    global max_recursion
 
     while casas_a_percorrer > casas_percorridas:
         for _ in range(casas_a_percorrer + 1):  # +1 para adicionar mais um movimento, pois inicia a contagem a partir da remoção da pedra.
@@ -86,21 +94,28 @@ def mover_peca(x: int, y: int, tabuleiro: list):
             if casas_percorridas == 0:  # Movimento da primeira casa, que remove as pedras da casa e inicia a distribuição na proxima casa no sentido anti-horário.
                 casas_percorridas += 1
                 tabuleiro[x][y] = 0
-                print(f"\n{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")
+                if simulacao == 0:
+                    print(f"\n{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")
             
             else:  # Caso não seja a primeira casa continua a distribuição no sentido anti-horário.
                 casas_percorridas += 1
                 tabuleiro[x][y] += 1
-                print(f"{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")  # Imprime o relatório da posição actual, pedras existentes anteriorimente e novo número de pedras.
+                if simulacao == 0:
+                    print(f"{casas_percorridas}. pos(x={x}, y={y}), {valor} -> {tabuleiro[x][y]}")  # Imprime o relatório da posição actual, pedras existentes anteriorimente e novo número de pedras.
                 if casas_percorridas - 1 == casas_a_percorrer:  # Verifica se está no ultimo movimento
                     if tabuleiro[x][y] > 1:  # se a casa onde foi feito o ultimo movimento número de peças for maior que 1
-                        print(f"\nPeças a mover: {tabuleiro[x][y]}")  # Informa o número de peças que irá mover
+                        if simulacao == 0:
+                            print(f"\nPeças a mover: {tabuleiro[x][y]}")  # Informa o número de peças que irá mover
+                            
+                        max_recursion -= 1
                         mover_peca(x, y, tabuleiro)  # Aplica novamente a função usando os parametros da posição actual.
-
+                        if max_recursion == 0:
+                            print("Distribuição Interropida, Limite Atingido")
+                            sys.exit()
                     elif tabuleiro[x][y] == 1:  # CAPTURA DE PEÇA
                         captura_de_pecas(tabuleiro, x, y)
+                        max_recursion = 20
             x, y = next_x, next_y
-    
     return tabuleiro
 
 
@@ -142,12 +157,15 @@ def obter_posicoes_validas(tabuleiro: list):
 
 
 def jogar(tabuleiro_jogador):
+    global simulacao
     while True:
         if tabuleiro_jogador == tabuleiro_player_1:
             texto = input("\nDigite a coordenada: ").capitalize()
             coordenada = coordenadas_P1
         elif tabuleiro_jogador == tabuleiro_player_2:
-            texto = random.choice(obter_posicoes_validas(tabuleiro_player_2)[0])
+            simulacao = 1
+            texto = melhor_jogada_player_2()
+            simulacao = 0
             coordenada = coordenadas_P2
             print(f"\nJogador 2 escolheu: {texto}")
 
@@ -169,6 +187,40 @@ def jogar(tabuleiro_jogador):
                 print("Nenhuma peça nesta posição. Tente novamente.")
         else:
             print("Coordenada desconhecida. Tente novamente.")
+            break
+
+
+def melhor_jogada_player_2():
+    global tabuleiro_player_1, tabuleiro_player_2, pontos_player_1, pontos_player_2
+
+    # Copias
+    og_tabuleiro_P1, og_tabuleiro_P2 = copy.deepcopy(tabuleiro_player_1), copy.deepcopy(tabuleiro_player_2)
+    og_pontos_P1, og_pontos_P2 = copy.deepcopy(pontos_player_1), copy.deepcopy(pontos_player_2)
+
+    resultados_de_movimentos = {}
+    melhores_jogadas_sorted = []
+
+    coordenadas_validas = obter_posicoes_validas(tabuleiro_player_2)[0]
+
+    for jogada_valida in coordenadas_validas:
+        coordenada_a_jogar = obter_coordenadas(jogada_valida, coordenadas_P2)
+        mover_peca(coordenada_a_jogar[0], coordenada_a_jogar[1], copy.deepcopy(tabuleiro_player_2))
+        pontos_colectados = sum(map(sum, og_tabuleiro_P1)) - sum(map(sum, tabuleiro_player_1))
+        resultados_de_movimentos.update({f"{jogada_valida}":pontos_colectados})
+        
+        # Devolução das Copias
+        tabuleiro_player_1, tabuleiro_player_2 = copy.deepcopy(og_tabuleiro_P1), copy.deepcopy(og_tabuleiro_P2)
+        pontos_player_1, pontos_player_2 = copy.deepcopy(og_pontos_P1), copy.deepcopy(og_pontos_P2)
+    
+    melhores_jogadas = sorted(resultados_de_movimentos.items(), key=lambda x:x[1], reverse= True)
+    
+    for x in melhores_jogadas:
+        melhores_jogadas_sorted.append(x[0])
+    
+    if len(melhores_jogadas_sorted) != 0:
+        return melhores_jogadas_sorted[0]
+    else:
+        return random.choice(coordenadas_validas)
 
 
 def main():
