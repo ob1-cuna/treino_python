@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/output.css') }}">
+    <title>Resultado</title>
+</head>
+
+<body class="h-screen bg-principal">
+    <div class="sidebar">
+    </div>
+    <div class="results-area w-screen container mx-auto">
+        <div class="search-bar m-3">
+            <form action="{{url_for('pesquisar_paises')}}" method="GET">
+                <div class="flex">
+                    <div class="relative w-full">
+                        <input name="q" type="search" id="pais" value="{{ country_searched }}"
+                        class="block p-2.5 w-full z-20 text-sm rounded-xl border border-secundaria focus:outline-none focus:ring-1 focus:ring-secundaria_hover" 
+                        placeholder="digite nome de um país..." required />
+                        <button type="submit" 
+                        class="absolute top-0 end-0 p-2.5 h-full font-bold rounded-xl rounded-l-none hover:bg-secundaria_hover text-principal bg-secundaria hover:shadow-md">
+                        Pesquisar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-results">
+            <div class="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 container w-screen justify-items-center">
+                {% if details | length != 0 %}
+                {% for detail in details %}
+                <div class="max-w-sm rounded overflow-hidden shadow-lg ">
+                    <div class="m-3 mb-1">
+                        <a href="{{ url_for('get_country_data', name=detail['nome_pais_en']) }}">
+                            <img src="{{ detail['bandeira_svg'] }}" alt="" class="object-fill h-60 w-96">
+                        </a>
+                    </div>
+                    <div class="m-3 mt-1">
+                        <div>
+                            <p class="text-gray-700 text-md font-semibold text-left"><a href="{{ url_for('get_country_data', name=detail['nome_pais_en']) }}">{{ detail['nome_pais_en'] }}</a></p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-gray-700 text-sm text-opacity-60">{{ detail['regiao'] }}{% if detail['subregiao'] != 'NO DATA' %}, {{ detail['subregiao'] }} {% endif %}</p>
+                            <div class="ml-2 flex items-center">
+                                <img class="w-4 h-4 mb-" src="{{ url_for('static', filename='images/icones/capital.svg') }}" alt="">
+                                <div class="text-sm font-light ml-1" id="populacao_valor">
+                                    {{ detail['capital'][0] }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="m-3 text-green-950 text-lg">
+                    Sem resultados para <a class="font-bold"> {{ country_searched }}</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

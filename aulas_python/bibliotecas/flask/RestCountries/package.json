@@ -1,0 +1,17 @@
+{
+  "name": "flask_paises",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "npx tailwindcss -i ./static/styles/input.css -o ./static/styles/output.css",
+    "watch:css": "npx tailwindcss -i ./static/styles/input.css -o ./static/styles/output.css --watch"
+  },
+  "author": "Anacleto Cuna",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+  
+}

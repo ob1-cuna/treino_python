@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/output.css') }}">
+    <title>Resultado</title>
+</head>
+
+<body class="h-screen bg-principal">
+    <div class="mx-auto w-fit mt-3">
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+            <div class="m-3 mb-1">
+                <img src="{{ details['bandeira_svg'] }}" alt="" class="object-fill h-60 w-96">
+            </div>
+            <div class="m-3 mt-1">
+                <div>
+                    <p class="text-gray-700 text-md font-semibold text-left">{{ details['nome_pais_en'] }} {% if
+                        details['nome_pais_en'] != details['nome_nativo'] %} ({{details['nome_nativo']}}) {% endif %}</p>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-700 text-base text-opacity-60">{{ details['regiao'] }} {% if details['subregiao'] !=
+                            'NO DATA' %}, {{ details['subregiao'] }} {% endif %}</p>
+                    </div>
+                    <div class="flex">
+                        <img class="w-5 h-5" src="{{ url_for('static', filename='images/icones/capital.svg') }}" alt="">
+                        <div class="text-base font-normal ml-3 text-gray-700" id="populacao_valor">
+                            {{ details['capital'][0]}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detalhes_adicionais mt-8">
+            <h3 class="text-xl font-bold text-gray-700">Dados do País</h3>
+            <table class="mt-3 border-2 border-solid border-secundaria w-96">
+                <tbody class="text-sm">
+                    <tr class="bg-neutral-200 border-b-2 border-secundaria">
+                        <th class="text-left p-2 border-r-2 border-secundaria w-2/6">Item</th>
+                        <th class="text-left p-2 w-2/3">Descrição</th>
+                    </tr>
+                    <tr class="border-b-2 border-secundaria">
+                        <td class="text-left p-2 border-r-2 border-secundaria">População</td>
+                        <td class="text-left p-2">{{ details['populacao']}} (aprox.)</td>
+                    </tr>
+                    <tr class="border-b-2 border-secundaria">
+                        <td class="text-left p-2 border-r-2 border-secundaria">Area</td>
+                        <td class="text-left p-2">{{details['area']}}km<sup>2</sup></td>
+                    </tr>
+                    <tr class="border-b-2 border-secundaria">
+                        <td class="text-left p-2 border-r-2 border-secundaria">Linguas Oficiais</td>
+                        <td class="text-left p-2">
+                            {{ details['linguas']|join(', ')}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left p-2 border-r-2 border-secundaria">Moeda Oficial</td>
+                        <td class="text-left p-2">{{details['moeda'][1]}} - {{details['moeda'][0]}} ({{details['moeda'][2]}})</sup></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-5">
+            <h3 class="text-xl font-bold text-gray-700">Baixar Detalhes</h3>
+        <div class="justify-between flex w-1/2 gap-2">
+            <a href="{{url_for('baixar_dados', name='Mozambique', format='xls')}}"
+                class="mt-3 inline-flex items-center gap-2 justify-center px-5 py-3 text-base font-medium text-center text-principal bg-secundaria hover:bg-secundaria_hover rounded-xl">
+                {% include 'svgs/download.svg' %}
+                .XLS
+            </a>
+            <a href="{{url_for('baixar_dados', name='Mozambique', format='xml')}}"
+                class="mt-3 inline-flex items-center gap-2 justify-center px-5 py-3 text-base font-medium text-center text-principal bg-secundaria hover:bg-secundaria_hover rounded-xl">
+                {% include 'svgs/download.svg' %}
+                .XML
+            </a>
+            <a href="{{url_for('baixar_dados', name='Mozambique', format='csv')}}"
+                class="mt-3 inline-flex items-center gap-2 justify-center px-5 py-3 text-base font-medium text-center text-principal bg-secundaria hover:bg-secundaria_hover rounded-xl">
+                {% include 'svgs/download.svg' %}
+                .CSV
+            </a>
+            </div>
+    </div>
+    </div>
+</body>
+</html>

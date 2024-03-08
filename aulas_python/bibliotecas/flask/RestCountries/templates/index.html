@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/output.css') }}">
+    <title>Dados de Paises</title>
+</head>
+<body class="h-screen bg-principal">
+    <div class="flex flex-col items-center justify-center h-screen">
+        <img src="{{ url_for('static', filename='images/logo_text.svg') }}" alt="Country Data Logo" class="mb-8">
+        <div class="w-screen">
+            <form class="flex flex-col items-center" action="{{url_for('pesquisar_paises')}}" method="GET">
+                <input name="q" type="text" id="pais"
+                    placeholder="digite nome de um país..." 
+                    class="w-1/2 text-left border border-secundaria py-2 px-6 rounded-xl mb-3 focus:outline-none focus:ring-1 focus:ring-secundaria_hover">
+                <button type="submit" class="w-fit font-bold py-2 px-7 rounded-xl hover:bg-secundaria_hover text-principal bg-secundaria hover:shadow-md">
+                    Pesquisar
+                </button>
+            </form>
+        </div>
+    </div>
+    
+
+</body>
+
+</html>
